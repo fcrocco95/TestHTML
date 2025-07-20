@@ -127,7 +127,7 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
 
 <h1>Funzione <code>dikstraSolver</code>: calcolo cammini minimi da nodo 0</h1>
 
-<pre><code><span class="keyword">def</span> <span class="function">dikstraSolver</span>(n, out_nei):
+<pre><code><span class="keyword">def</span> <span class="function">dikstraSolver</span>(n, graph):
     dist = [<span class="keyword">float</span>('inf')] * n
     num_shortest_paths = [0] * n
     all_parents = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="keyword">range</span>(n)]
@@ -143,7 +143,7 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
         <span class="keyword">if</span> d &gt; dist[u]:
             <span class="keyword">continue</span>
 
-        <span class="keyword">for</span> v, weight <span class="keyword">in</span> out_nei[u]:
+        <span class="keyword">for</span> v, weight <span class="keyword">in</span> graph[u]:
             new_dist = dist[u] + weight
             <span class="keyword">if</span> dist[v] &gt; new_dist:
                 dist[v] = new_dist
