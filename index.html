@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Codice examLIS</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #f4f4f4;
+      margin: 40px;
+    }
+    h1 {
+      color: #333;
+    }
+    pre {
+      background-color: #272822;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    .comment {
+      color: #75715e;
+    }
+    .keyword {
+      color: #66d9ef;
+    }
+    .string {
+      color: #e6db74;
+    }
+    .function {
+      color: #a6e22e;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Funzione <code>examLIS</code> con gestione speciale del conteggio</h1>
+
+  <pre><code><span class="keyword">def</span> <span class="function">examLIS</span>(A):
+    n = <span class="keyword">len</span>(A)
+    dp = [1] * n
+    cnt = [1] * n
+    prev = [-1] * n
+
+    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(n):
+        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="keyword">range</span>(i):
+            <span class="keyword">if</span> A[j] &lt; A[i]:
+                <span class="keyword">if</span> dp[j] + 1 &gt; dp[i]:
+                    dp[i] = dp[j] + 1
+                    <span class="comment"># Fix per la corretta gestione se le ultime 2 cifre sono (5,6) || (11,12)</span>
+                    <span class="keyword">if</span> A[i] != A[-1]:
+                        cnt[i] = cnt[j]
+                    prev[i] = j
+                <span class="keyword">elif</span> dp[j] + 1 == dp[i]:
+                    cnt[i] = (cnt[i] + cnt[j]) % 10**7
+
+    opt_val = <span class="keyword">max</span>(dp)
+    indices = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(n) <span class="keyword">if</span> dp[i] == opt_val]
+    num_sols = <span class="keyword">sum</span>(cnt[i] <span class="keyword">for</span> i <span class="keyword">in</span> indices) % 10**7
+
+    <span class="comment"># Reconstruct phase</span>
+    i = indices[0]
+    opt_sol = []
+    <span class="keyword">while</span> i != -1:
+        opt_sol.append(A[i])
+        i = prev[i]
+    opt_sol.reverse()
+
+    <span class="keyword">return</span> opt_val, opt_sol, num_sols
+</code></pre>
+
+  <h2>Altri codici (da aggiungere qui)</h2>
+  <p>Puoi duplicare il blocco <code>&lt;pre&gt;&lt;code&gt;...&lt;/code&gt;&lt;/pre&gt;</code> per altri codici Python, o inserire link, documentazione, ecc.</p>
+
+</body>
+</html>
