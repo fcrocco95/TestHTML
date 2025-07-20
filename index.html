@@ -124,5 +124,50 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
     <span class="keyword">return</span> min_weight, best_path, ways
 </code></pre>
 
+
+<h1>Funzione <code>dikstraSolver</code>: calcolo cammini minimi da nodo 0</h1>
+
+<pre><code><span class="keyword">def</span> <span class="function">dikstraSolver</span>(n, out_nei):
+    dist = [<span class="keyword">float</span>('inf')] * n
+    num_shortest_paths = [0] * n
+    all_parents = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="keyword">range</span>(n)]
+    chosen_parent = [0] * n
+
+    dist[0] = 0
+    num_shortest_paths[0] = 1
+    heap = [(0, 0)]
+
+    <span class="comment"># Algoritmo di Dijkstra</span>
+    <span class="keyword">while</span> heap:
+        d, u = heapq.heappop(heap)
+        <span class="keyword">if</span> d &gt; dist[u]:
+            <span class="keyword">continue</span>
+
+        <span class="keyword">for</span> v, weight <span class="keyword">in</span> out_nei[u]:
+            new_dist = dist[u] + weight
+            <span class="keyword">if</span> dist[v] &gt; new_dist:
+                dist[v] = new_dist
+                num_shortest_paths[v] = num_shortest_paths[u]
+                all_parents[v] = [u]
+                heapq.heappush(heap, (dist[v], v))
+            <span class="keyword">elif</span> dist[v] == new_dist:
+                num_shortest_paths[v] = (num_shortest_paths[v] + num_shortest_paths[u]) % MOD
+                all_parents[v].append(u)
+
+    <span class="comment"># Costruzione dell'albero dei cammini minimi</span>
+    <span class="keyword">for</span> v <span class="keyword">in</span> <span class="keyword">range</span>(1, n):
+        chosen_parent[v] = <span class="keyword">min</span>(all_parents[v])
+
+    num_trees = 1
+    <span class="keyword">for</span> v <span class="keyword">in</span> <span class="keyword">range</span>(1, n):
+        <span class="keyword">if</span> <span class="keyword">not</span> all_parents[v]:
+            num_trees = 0
+            <span class="keyword">break</span>
+        <span class="keyword">if</span> <span class="keyword">len</span>(<span class="keyword">set</span>(all_parents[v])) &gt; 1:
+            <span class="keyword">continue</span>
+
+    <span class="keyword">return</span> dist, chosen_parent, num_trees
+</code></pre>
+
 </body>
 </html>
