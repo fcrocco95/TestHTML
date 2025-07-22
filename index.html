@@ -36,7 +36,6 @@
 <body>
 
   <h1>Funzione <code>examLIS</code> con gestione speciale del conteggio</h1>
-
   <pre><code><span class="keyword">def</span> <span class="function">examLIS</span>(A):
     n = <span class="keyword">len</span>(A)
     dp = [1] * n
@@ -70,8 +69,25 @@
     <span class="keyword">return</span> opt_val, opt_sol, num_sols
 </code></pre>
 
-  <h1>Funzione <code>graphExplorerDFSPlusVincoliLabels</code> e uso</h1>
+  <h1>Funzione <code>bfs</code>: visita in ampiezza</h1>
+  <pre><code><span class="keyword">from</span> collections <span class="keyword">import</span> deque
+<span class="keyword">def</span> <span class="function">bfs</span>(graph, startNode):
+    visited = <span class="keyword">set</span>()
+    visited_order = []
+    queue = deque([startNode])
+    visited.add(startNode)
 
+    <span class="keyword">while</span> queue:
+        node = queue.popleft()
+        visited_order.append(node)  
+        <span class="keyword">for</span> neighbor <span class="keyword">in</span> graph.get(node, []):
+            <span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    <span class="keyword">return</span> visited_order  
+</code></pre>
+
+  <h1>Funzione <code>graphExplorerDFSPlusVincoliLabels</code> e uso</h1>
   <pre><code><span class="keyword">graph</span> = {
     0: [(1,2), (2,3)],
     1: [(3,2), (4,4)],
@@ -124,10 +140,8 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
     <span class="keyword">return</span> min_weight, best_path, ways
 </code></pre>
 
-
-<h1>Funzione <code>dikstraSolver</code>: calcolo cammini minimi da nodo 0</h1>
-
-<pre><code><span class="keyword">def</span> <span class="function">dikstraSolver</span>(n, graph):
+  <h1>Funzione <code>dikstraSolver</code>: calcolo cammini minimi da nodo 0</h1>
+  <pre><code><span class="keyword">def</span> <span class="function">dikstraSolver</span>(n, graph):
     dist = [<span class="keyword">float</span>('inf')] * n
     num_shortest_paths = [0] * n
     all_parents = [[] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="keyword">range</span>(n)]
