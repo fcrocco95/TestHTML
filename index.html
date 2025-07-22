@@ -140,24 +140,32 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
     <span class="keyword">return</span> min_weight, best_path, ways
 </code></pre>
 
-  <h1>Funzione <code>coinChangeMin</code>: resto con numero minimo di monete</h1>
-<pre><code><span class="keyword">def</span> <span class="function">coinChangeMin</span>(coins, amount):
-    INF = amount + 1
+  <h1>Funzione <code>coinChangeBounded</code>: resto con quantità limitate (monete finite)</h1>
+<pre><code><span class="keyword">def</span> <span class="function">coinChangeBounded</span>(coins, limits, amount):
+    INF = <span class="keyword">float</span>('inf')
     dp = [INF] * (amount + 1)
     cnt = [0] * (amount + 1)
     prev = [-1] * (amount + 1)
+    used = [-1] * (amount + 1)
 
     dp[0] = 0
     cnt[0] = 1
 
-    <span class="keyword">for</span> coin <span class="keyword">in</span> coins:
-        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(coin, amount + 1):
-            <span class="keyword">if</span> dp[i - coin] + 1 &lt; dp[i]:
-                dp[i] = dp[i - coin] + 1
-                cnt[i] = cnt[i - coin]
-                prev[i] = coin
-            <span class="keyword">elif</span> dp[i - coin] + 1 == dp[i]:
-                cnt[i] = (cnt[i] + cnt[i - coin]) % (10**7)
+    <span class="comment"># Per ogni tipo di moneta (coin) con un numero limitato (limits)</span>
+    <span class="keyword">for</span> i, coin <span class="keyword">in</span> <span class="keyword">enumerate</span>(coins):
+        max_qty = limits[i]
+        <span class="keyword">for</span> a <span class="keyword">in</span> <span class="keyword">range</span>(amount, -1, -1):
+            <span class="keyword">for</span> k <span class="keyword">in</span> <span class="keyword">range</span>(1, max_qty + 1):
+                next_a = a + k * coin
+                <span class="keyword">if</span> next_a &gt; amount:
+                    <span class="keyword">break</span>
+                <span class="keyword">if</span> dp[a] + k &lt; dp[next_a]:
+                    dp[next_a] = dp[a] + k
+                    cnt[next_a] = cnt[a]
+                    prev[next_a] = a
+                    used[next_a] = i
+                <span class="keyword">elif</span> dp[a] + k == dp[next_a]:
+                    cnt[next_a] = (cnt[next_a] + cnt[a]) % (10**7)
 
     <span class="keyword">if</span> dp[amount] == INF:
         <span class="keyword">return</span> -1, [], 0
@@ -165,16 +173,21 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
     opt_val = dp[amount]
     num_sols = cnt[amount]
 
+    <span class="comment"># Ricostruzione della soluzione ottima</span>
     opt_sol = []
     curr = amount
     <span class="keyword">while</span> curr &gt; 0:
-        coin = prev[curr]
-        opt_sol.append(coin)
-        curr -= coin
+        prev_amt = prev[curr]
+        coin_idx = used[curr]
+        coin_val = coins[coin_idx]
+        count = (curr - prev_amt) // coin_val
+        opt_sol.extend([coin_val] * count)
+        curr = prev_amt
     opt_sol.reverse()
 
     <span class="keyword">return</span> opt_val, opt_sol, num_sols
 </code></pre>
+
 
 
   <h1>Funzione <code>dikstraSolver</code>: calcolo cammini minimi da nodo 0</h1>
