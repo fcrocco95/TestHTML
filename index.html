@@ -140,6 +140,43 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
     <span class="keyword">return</span> min_weight, best_path, ways
 </code></pre>
 
+  <h1>Funzione <code>coinChangeMin</code>: resto con numero minimo di monete</h1>
+<pre><code><span class="keyword">def</span> <span class="function">coinChangeMin</span>(coins, amount):
+    INF = amount + 1
+    dp = [INF] * (amount + 1)
+    cnt = [0] * (amount + 1)
+    prev = [-1] * (amount + 1)
+
+    dp[0] = 0
+    cnt[0] = 1
+
+    <span class="keyword">for</span> coin <span class="keyword">in</span> coins:
+        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="keyword">range</span>(coin, amount + 1):
+            <span class="keyword">if</span> dp[i - coin] + 1 &lt; dp[i]:
+                dp[i] = dp[i - coin] + 1
+                cnt[i] = cnt[i - coin]
+                prev[i] = coin
+            <span class="keyword">elif</span> dp[i - coin] + 1 == dp[i]:
+                cnt[i] = (cnt[i] + cnt[i - coin]) % (10**7)
+
+    <span class="keyword">if</span> dp[amount] == INF:
+        <span class="keyword">return</span> -1, [], 0
+
+    opt_val = dp[amount]
+    num_sols = cnt[amount]
+
+    opt_sol = []
+    curr = amount
+    <span class="keyword">while</span> curr &gt; 0:
+        coin = prev[curr]
+        opt_sol.append(coin)
+        curr -= coin
+    opt_sol.reverse()
+
+    <span class="keyword">return</span> opt_val, opt_sol, num_sols
+</code></pre>
+
+
   <h1>Funzione <code>dikstraSolver</code>: calcolo cammini minimi da nodo 0</h1>
   <pre><code><span class="keyword">def</span> <span class="function">dikstraSolver</span>(n, graph):
     dist = [<span class="keyword">float</span>('inf')] * n
@@ -182,6 +219,8 @@ min_weight, best_path, ways = <span class="function">graphExplorerDFSPlusVincoli
 
     <span class="keyword">return</span> dist, chosen_parent, num_trees
 </code></pre>
+
+  
 
 </body>
 </html>
